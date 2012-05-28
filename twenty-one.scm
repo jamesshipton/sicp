@@ -8,7 +8,7 @@
                       (hand-up-card house-initial-hand))))
       (if (> (hand-total player-hand) 21)
           0                                ; ``bust'': player loses
-          (let ((house-hand 
+          (let ((house-hand
                  (play-hand house-strategy
                             house-initial-hand
                             (hand-up-card player-hand))))
@@ -60,4 +60,20 @@
 
 (define (user-says-y?) (eq? (read) 'y))
 
+(define (stop_at total)
+  (lambda(my_hand opponent_up_card)
+    (< (hand-total my_hand) total)))
 
+(define (test-strategy player-strategy house-strategy number)
+  (if (eq? number 0) 0
+      (+
+       (twenty-one player-strategy house-strategy)
+       (test-strategy player-strategy house-strategy (dec number)))))
+
+(define (test-strategy player-strategy house-strategy number)
+  (define (test-strategy-iter player-strategy house-strategy number total)
+  (if (eq? number 0) total
+      (test-strategy-iter player-strategy house-strategy (dec number)
+                     (+ total (twenty-one player-strategy house-strategy)))))
+  (test-strategy-iter player-strategy house-strategy number 0)
+  )
